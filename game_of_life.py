@@ -5,7 +5,7 @@ from random import randint
 
 pygame.init()
 
-fps = 1000
+fps = 100
 white = (255, 255, 255)
 black = (0, 0, 0)
 
@@ -28,12 +28,12 @@ universe = []
 for column in range(gridSize):
     tempcolumn = []
     for row in range(gridSize):
-            tempcolumn.append(randint(0, 1))
+        tempcolumn.append(randint(0, 1))
     universe.append(tempcolumn)
 
-#print(universe)
+# print(universe)
 
-#universe = [[0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 0, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
+# universe = [[0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 0, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
 
 screen = pygame.display.set_mode(size)
 
@@ -45,31 +45,20 @@ builder = False
 
 while menu is True:
 
-    # ev = pygame.event.get()
-    #
-    # for event in ev:
-    #     if event.type == pygame.QUIT:
-    #         sys.exit()
-    #     if pygame.key.get_pressed()[pygame.K_ESCAPE]:
-    #         sys.exit()
-
     screen.fill(black)
 
-    # titleFont = pygame.font.SysFont('Helvetica', 50)
-    # titleSurface = titleFont.render("Conway's Game of Life", False, white)
-    # screen.blit(titleSurface, (155, 100))
-
+    # random universe button
     menuFont = pygame.font.SysFont('Helvetica', 30)
     randomSurface = menuFont.render("Random Universe", False, white)
     randomSurfaceCoord = (255, 300)
     screen.blit(randomSurface, randomSurfaceCoord)
-    randomSurfaceRect = pygame.Rect(randomSurfaceCoord, (200, 50))
+    randomSurfaceRect = pygame.Rect(randomSurfaceCoord, (175, 50))
 
+    # builder mode button
     builderSurface = menuFont.render("Universe Builder", False, white)
     builderSurfaceCoord = (260, 400)
     screen.blit(builderSurface, builderSurfaceCoord)
-    builderSurfaceRect = pygame.Rect(builderSurfaceCoord, (300, 50))
-
+    builderSurfaceRect = pygame.Rect(builderSurfaceCoord, (170, 50))
 
     # proceed events
     for event in pygame.event.get():
@@ -92,10 +81,7 @@ while menu is True:
         if pygame.key.get_pressed()[pygame.K_ESCAPE]:
             sys.exit()
 
-    pygame.event.get()
-
     pygame.display.flip()
-
 
 while randomGame is True:
 
@@ -130,7 +116,7 @@ while randomGame is True:
             tempColumn.append(0)
         tempUniverse.append(tempColumn)
 
-
+    # applying game rules
     for column in range(gridSize):
         for row in range(gridSize):
             # counting
@@ -176,7 +162,7 @@ while randomGame is True:
                 if universe[column - 1][row + 1] == 1:
                     counter += 1
 
-            # decision
+            # thumbs up or down
             if universe[column][row] == 0:
                 if counter == 3:
                     tempUniverse[column][row] = 1
@@ -186,8 +172,51 @@ while randomGame is True:
                 else:
                     tempUniverse[column][row] = 1
 
-
+    # bring new universe into place
     universe = tempUniverse
+
+    pygame.event.get()
+
+    clock.tick(fps)
+    pygame.display.flip()
+
+# Builder module
+while builder is True:
+
+    print("buildermode activated")
+
+    # initialization
+    clock = pygame.time.Clock()
+
+    ev = pygame.event.get()
+
+    for event in ev:
+        if event.type == pygame.QUIT:
+            sys.exit()
+        if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+            sys.exit()
+
+    screen.fill(black)
+
+    # initialize empty universe
+    universe = []
+    for column in range(gridSize):
+        tempColumn = []
+        for row in range(gridSize):
+            tempColumn.append(0)
+        universe.append(tempColumn)
+
+    # draw the latest state
+    for column in range(gridSize):
+        for row in range(gridSize):
+            rect = pygame.Rect(column * blocksize, row * blocksize, blocksize, blocksize)
+            if universe[column][row] == 1:
+                pygame.draw.rect(screen, white, rect)
+            else:
+                pygame.draw.rect(screen, black, rect)
+
+
+
 
     pygame.event.get()
 
